@@ -1,59 +1,97 @@
 package org.example.warehouse;
 import java.math.BigDecimal;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.IntPredicate;
 
 public class Warehouse {
-    private static String myStore;
-    Scanner scanner = new Scanner(System.in);
-
+    // testet når inte "name" kan det bero på något som står innan Typen
+    private final String name;
+    private static Map<String, Warehouse> instances = new HashMap<>();
+    private List<ProductRecord> products = new ArrayList<>();
+    private List<ProductRecord> changedProducts = new ArrayList<>();
     private Warehouse Warehouse;
+
     private Warehouse(String myStore) {
-        this.myStore = myStore;
+        this.name = myStore;
     }
 
-    // Overloaded private constructor in case no store is provided
+    // Overloaded private construct ifall ingen store finns
     private Warehouse() {
-        this.myStore = "Default Store"; // You can set a default store name here
+        this.name = "MyStore"; // You can set a default store name here
     }
 
     public static Warehouse getInstance(String myStore) {
         //org.example.warehouse.Warehouse.myStore = myStore;
 
-
+        return instances.computeIfAbsent(myStore, Warehouse::new);
+    }
+    public static Warehouse getInstance() {
+        //org.example.warehouse.Warehouse.myStore = myStore;
+        return new Warehouse(" ");
+       // return instances.computeIfAbsent("MyStore", name -> new Warehouse());
     }
 
     public boolean isEmpty() {
+        return products.isEmpty();
     }
 
-    public ProductRecord addProduct(UUID uuidMilk, String milk, Category dairy, BigDecimal bigDecimal) {
+
+
+    public List<ProductRecord> getProducts() {
+        return products;
+
+        //return false;
+    }
+
+    public List<ProductRecord> getProductById(UUID uuid) {
+        List<ProductRecord> IDs= new ArrayList<>();
+        for (ProductRecord productUUID : products) {
+            if(uuid==productUUID.uuid()){
+                IDs.add(productUUID);
+                }
+        }
+
+        return IDs;
+    }
+
+
+    public boolean getChangedProducts() {
+//        addProduct()
+        return false;
 
     }
 
-    public boolean getProducts() {
+
+    public boolean getProductsGroupedByCategories() {
+        return false;
     }
 
-    public boolean getProductById(IntPredicate uuid) {
+    public List<ProductRecord> getProductsBy(Category category) {
+        List<ProductRecord> sameCategory = new ArrayList<>();
+        for (ProductRecord productUUID : products) {
+            if(category==productUUID.category()){
+                sameCategory.add(productUUID);
+            }
+        }
+
+        return sameCategory;
     }
+
 
     public void updateProductPrice(IntPredicate uuid, BigDecimal bigDecimal) {
     }
 
-    public boolean getChangedProducts() {
+    public ProductRecord addProduct(UUID uuid, String milk, Category dairy, BigDecimal bigDecimal) {
+        ProductRecord product = new ProductRecord(uuid, milk, dairy, bigDecimal);
+
+        for(ProductRecord eachProduct : products) {
+            if(uuid==eachProduct.uuid()){
+                throw new IllegalArgumentException("Product with that id already exists, use updateProduct for updates.");
+            }
+        }
+        products.add(product);
+
+        return product;
     }
-
-    public boolean getProductsGroupedByCategories() {
-    }
-
-    public boolean getProductsBy(Category meat) {
-    }
-
-
-
-
-
-
-
 
 }
