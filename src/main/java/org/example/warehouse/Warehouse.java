@@ -78,7 +78,17 @@ public class Warehouse {
     }
 
 
-    public void updateProductPrice(IntPredicate uuid, BigDecimal bigDecimal) {
+    public List<ProductRecord> updateProductPrice(UUID uuid, BigDecimal price) {
+        for(ProductRecord changePriceToSaveIt : products){
+            if(changePriceToSaveIt.uuid().equals(uuid)){
+                changePriceToSaveIt.name();
+                changePriceToSaveIt.category();
+                ProductRecord changePriceToSaveItToList = new ProductRecord(uuid,name,changePriceToSaveIt.category(),price);
+                int index = products.indexOf(changePriceToSaveIt);
+                products.set(index, changePriceToSaveItToList);
+            }
+        }
+        return products;
     }
 
     public ProductRecord addProduct(UUID uuid, String milk, Category dairy, BigDecimal bigDecimal) {
