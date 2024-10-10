@@ -17,23 +17,15 @@ public class Category {
         }
         return categories.computeIfAbsent(name.toLowerCase(), Category::new);
     }
+
     public String getName() {
         return name;
     }
+
     private String capitalizeFirstLetter(String name) {
         if (name == null || name.isEmpty()) {
             return name;
         }
         return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
-
-
-//    public static String getName(){
-//
-//        return null;
-//    }
-//
-//    public static Category of(String name) {
-//        return null;
-//    }
 }
