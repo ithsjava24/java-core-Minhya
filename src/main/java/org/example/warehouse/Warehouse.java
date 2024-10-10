@@ -8,7 +8,7 @@ public class Warehouse {
     private final String name;
     private static Map<String, Warehouse> instances = new HashMap<>();
     private List<ProductRecord> products = new ArrayList<>();
-    private List<ProductRecord> changedProducts = new ArrayList<>();
+    private Set<ProductRecord> changedProducts = new HashSet<>();
     private Warehouse Warehouse;
 
     private Warehouse(String myStore) {
@@ -32,34 +32,35 @@ public class Warehouse {
     }
 
     public boolean isEmpty() {
+
         return products.isEmpty();
     }
 
 
 
     public List<ProductRecord> getProducts() {
-        return products;
+        return Collections.unmodifiableList(products);
 
         //return false;
     }
 
-    public List<ProductRecord> getProductById(UUID uuid) {
-        List<ProductRecord> IDs= new ArrayList<>();
-        for (ProductRecord productUUID : products) {
-            if(uuid==productUUID.uuid()){
-                IDs.add(productUUID);
-                }
-        }
+    public Optional<ProductRecord>getProductById(UUID uuid) {
+        return products.stream()
+                .filter(product -> product.uuid().equals(uuid))
+                .findFirst();
 
-        return IDs;
+//        List<ProductRecord> IDs= new ArrayList<>();
+//        for (ProductRecord productUUID : products) {
+//            if(uuid==productUUID.uuid()){
+//                IDs.add(productUUID);
+//                }
+//        }
+
+      //  return IDs;
     }
 
 
-    public boolean getChangedProducts() {
-//        addProduct()
-        return false;
 
-    }
 
 
     public boolean getProductsGroupedByCategories() {
@@ -78,7 +79,17 @@ public class Warehouse {
     }
 
 
-    public List<ProductRecord> updateProductPrice(UUID uuid, BigDecimal price) {
+    public void updateProductPrice(UUID uuid, BigDecimal price) {
+//        ArrayList<ProductRecord> changedProduce = new ArrayList<>();
+//        changedProduce.addAll(products);
+//        for (ProductRecord productUUID : changedProduce) {
+//            if(productUUID.uuid().equals(uuid)){
+//
+//            }
+//        }
+
+
+
         for(ProductRecord changePriceToSaveIt : products){
             if(changePriceToSaveIt.uuid().equals(uuid)){
                 changePriceToSaveIt.name();
@@ -86,9 +97,15 @@ public class Warehouse {
                 ProductRecord changePriceToSaveItToList = new ProductRecord(uuid,name,changePriceToSaveIt.category(),price);
                 int index = products.indexOf(changePriceToSaveIt);
                 products.set(index, changePriceToSaveItToList);
-            }
+
+            }throw new IllegalArgumentException("Product with that id doesn't exist.");
+
         }
+       // return products;
+    }
+    public List<ProductRecord> getChangedProducts() {
         return products;
+
     }
 
     public ProductRecord addProduct(UUID uuid, String milk, Category dairy, BigDecimal bigDecimal) {
