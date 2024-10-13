@@ -43,13 +43,9 @@ public class Warehouse {
     }
 
     public List<ProductRecord> getProductsBy(Category category) {
-        List<ProductRecord> sameCategory = new ArrayList<>();
-        for (ProductRecord productUUID : products) {
-            if (category == productUUID.category()) {
-                sameCategory.add(productUUID);
-            }
-        }
-        return sameCategory;
+        return products.stream()
+                .filter(product -> product.category().equals(category))
+                .collect(Collectors.toList());
     }
 
     public void updateProductPrice(UUID uuid, BigDecimal price) {
@@ -68,14 +64,17 @@ public class Warehouse {
         return changedProducts;
     }
 
-    public ProductRecord addProduct(UUID uuid, String milk, Category dairy, BigDecimal bigDecimal) {
-        ProductRecord product = new ProductRecord(uuid, milk, dairy, bigDecimal);
-        for (ProductRecord eachProduct : products) {
-            if (uuid == eachProduct.uuid()) {
-                throw new IllegalArgumentException("Product with that id already exists, use updateProduct for updates.");
-            }
-        }
-        products.add(product);
-        return product;
+    public ProductRecord addProduct(UUID uuid, String milk, Category dairy, BigDecimal price) {
+        products.stream()
+                .filter(product -> product.uuid().equals(uuid))
+                .findAny()
+                .ifPresent(existingProduct -> {
+                    throw new IllegalArgumentException("Product with that id already exists, use updateProduct for updates.");
+                });
+
+        ProductRecord newProduct = new ProductRecord(uuid, milk, dairy, price);
+        products.add(newProduct);
+
+        return newProduct;
     }
 }
